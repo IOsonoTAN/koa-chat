@@ -1,0 +1,7 @@
+body { background: #FFF; padding: 30px 0 }
+ul#messages { list-style: none; margin: 0; padding: 0; height: 300px; overflow-x: hidden; border: 1px solid #CCC; border-radius: 3px; margin-bottom: 10px }
+ul#messages li { padding: 10px }
+ul#messages li:nth-child(odd) { background: #EEE }
+
+#chatbox { position: relative }
+#chatbox #loginForm { position: absolute; width: 100%; height: 100%; background: #DDD; z-index: 9999; text-align: center; padding: 120px 0; }

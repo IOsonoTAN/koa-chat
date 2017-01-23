@@ -1,0 +1,69 @@
+<div class="container">
+  <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1">
+    <div id="chatbox">
+      <div id="loginForm">
+        <h4>Enter your display name</h4>
+        <div class="row">
+          <div class="col-sm-4 col-sm-offset-4">
+            <form class="frmLogin">
+              <div class="input-group">
+                <input id="displayName" autocomplete="off" class="form-control" placeholder="Ex. IOsonoTAN" value="IOsonoTAN">
+                <span class="input-group-btn">
+                  <button class="btn btn-default">Sign In</button>
+                </span>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <ul id="messages"></ul>
+      <form class="frmSendMessage">
+        <div class="input-group">
+          <input id="message" autocomplete="off" class="form-control" placeholder="What's on your mind?">
+          <span class="input-group-btn">
+            <button class="btn btn-primary">Send message</button>
+          </span>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  const socket = io();
+  const inputMessage = $('#message');
+  const messageList = $('#messages');
+
+  $('form.frmSendMessage').submit(() => {
+    if (inputMessage.val()) {
+      socket.emit('chat message', inputMessage.val());
+      inputMessage.val('');
+    }
+    return false;
+  });
+  socket.on('chat message', (messages) => {
+    if (typeof messages === 'string') {
+      messageList.append($('<li>').text(messages));
+    } else if (messages.length > 0) {
+      messages.forEach((message) => {
+        messageList.append($('<li>').text(`${message.displayName}: ${message.message}`));
+      });
+    }
+    messageList.scrollTop(messageList.height());
+  });
+  $('form.frmLogin').submit(() => {
+    const loginForm = $('#loginForm');
+    const displayNameElement = $('#displayName');
+    const displayName = displayNameElement.val();
+    if (displayName) {
+      socket.emit('add user', displayName);
+      loginForm.hide();
+      inputMessage.focus();
+    } else {
+      displayNameElement.focus();
+    }
+    return false;
+  });
+</script>
